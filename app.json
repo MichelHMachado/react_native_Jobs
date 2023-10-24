@@ -8,6 +8,15 @@
       "expo-router"
     ],
     "name": "react_native_Jobs",
-    "slug": "react_native_Jobs"
+    "slug": "job-searcher",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "43664e89-35fe-41f4-8dab-b9c1a67d4a62"
+      }
+    },
+    "owner": "michelmachado"
   }
 }
