@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SafeAreaView, ScrollView, View } from "react-native";
+import { SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
 
 import { COLORS, icons, images, SIZES } from "../constants";
@@ -46,7 +46,25 @@ const Home = () => {
               }
             }}
           />
-
+          <TouchableOpacity
+            onPress={() => {
+              router.push("/signup");
+            }}
+            style={{
+              flex: 1,
+              width: "150px",
+              color: "white",
+              alignSelf: "center",
+              backgroundColor: "blue",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 8,
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+            }}
+          >
+            Signup
+          </TouchableOpacity>
           <Popularjobs />
           <Nearbyjobs />
         </View>
