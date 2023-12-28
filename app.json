@@ -5,7 +5,8 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-image-picker"
     ],
     "name": "react_native_Jobs",
     "slug": "job-searcher",
@@ -17,6 +18,19 @@
         "projectId": "43664e89-35fe-41f4-8dab-b9c1a67d4a62"
       }
     },
-    "owner": "michelmachado"
+    "owner": "michelmachado",
+    "android": {
+      "package": "com.michelmachado.jobsearcher",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/43664e89-35fe-41f4-8dab-b9c1a67d4a62"
+    },
+    "ios": {}
   }
 }
