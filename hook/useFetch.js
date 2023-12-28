@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { RAPID_API_KEY } from "@env";
 import { jobdata } from "../constants/jobData";
-const rapidApiKey = RAPID_API_KEY;
+const rapidApiKey = process.env.EXPO_PUBLIC_RAPID_API_KEY;
 
 const useFetch = (endpoint, query) => {
   const [data, setData] = useState([]);
@@ -23,18 +22,18 @@ const useFetch = (endpoint, query) => {
     setIsLoading(true);
 
     try {
-      const response = await axios.request(options);
+      /* const response = await axios.request(options); */
 
-      setData(response.data.data);
+      /* setData(response.data.data); */
+      setData(jobdata);
       setIsLoading(false);
     } catch (error) {
       if (error.response.status === 429) {
-        // Rate limit exceeded (status 429)
-        setData(jobdata); // Use jobData as fake data
+        setData(jobdata);
+        console.log("Using fake data!");
       } else {
         setError(error);
-        alert("There is an error");
-        console.log(error);
+        console.log(`There is an error. Take a look. ${error}`);
       }
     } finally {
       setIsLoading(false);
