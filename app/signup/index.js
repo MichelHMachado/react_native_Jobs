@@ -1,23 +1,37 @@
-import React, { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
-import { auth } from "../../firebaseConfig"; // Assuming auth is correctly exported in firebaseConfig
-import { createUserWithEmailAndPassword } from "firebase/auth"; // Import createUserWithEmailAndPassword
-import { Stack, useRouter } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, StyleSheet, TextInput, View } from "react-native";
+import { auth, firestore } from "../../firebaseConfig";
+import { collection, addDoc } from "@firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useRouter } from "expo-router";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imageURL, setImageURL] = useState(null);
+
   const router = useRouter();
 
   const onSignUpPress = async () => {
     try {
-      // Import createUserWithEmailAndPassword from firebase/auth
       const { user } = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      console.log("User signed up:", user);
+
+      await addDoc(collection(firestore, "users"), {
+        uid: user.uid,
+        firstName,
+        lastName,
+        email,
+      });
+
+      // Redirect to welcome page or any other page
+      router.push("/");
     } catch (error) {
       console.error("Error during sign up:", error);
     }
@@ -27,9 +41,24 @@ const Signup = () => {
     <View style={styles.container}>
       <TextInput
         style={styles.input}
+        placeholder="First Name"
+        value={firstName}
+        onChangeText={setFirstName}
+        id="first-name-input"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Last Name"
+        value={lastName}
+        onChangeText={setLastName}
+        id="last-name-input"
+      />
+      <TextInput
+        style={styles.input}
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
+        id="email-input"
       />
       <TextInput
         style={styles.input}
@@ -37,9 +66,11 @@ const Signup = () => {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        id="password-input"
       />
 
       <Button
+        testID="signup-button"
         title="Sign Up"
         onPress={() => {
           onSignUpPress();
