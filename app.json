@@ -17,6 +17,9 @@
         "projectId": "43664e89-35fe-41f4-8dab-b9c1a67d4a62"
       }
     },
-    "owner": "michelmachado"
+    "owner": "michelmachado",
+    "android": {
+      "package": "com.michelmachado.jobsearcher"
+    }
   }
 }
