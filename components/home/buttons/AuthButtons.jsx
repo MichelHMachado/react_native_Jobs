@@ -18,11 +18,6 @@ const AuthButton = ({ text, onPress, backgroundColor }) => {
 const AuthButtons = ({ onClose }) => {
   const router = useRouter();
 
-  const handleSignUp = () => {
-    router.push("/signup");
-    onClose();
-  };
-
   const handleSignIn = () => {
     router.push("/signin");
     onClose();
@@ -39,6 +34,11 @@ const AuthButtons = ({ onClose }) => {
         text="Sign Out"
         onPress={handleSignOut}
         backgroundColor="red"
+      />
+      <AuthButton
+        text="Sign In"
+        onPress={handleSignIn}
+        backgroundColor="blue"
       />
     </>
   );

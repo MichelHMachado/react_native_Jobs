@@ -1,4 +1,3 @@
-// Home.js
 import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView, ScrollView, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
@@ -10,51 +9,43 @@ import {
   Welcome,
 } from "../components";
 import { onAuthStateChanged, updateProfile } from "firebase/auth";
-import { auth, useAuth } from "../firebaseConfig";
+import { auth } from "../firebaseConfig";
 import ProfileModal from "../components/common/header/ProfileModal";
 
 const Home = () => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [user, setUser] = useState(null);
-  const [userId, setUserId] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
-  const currentUser = useAuth();
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser) {
-        const updatedUser = {
-          name: currentUser?.displayName,
-          photo: currentUser?.photoURL,
-        };
-
-        // Update the user state with the new information
-        setUser(updatedUser);
+        setUser(authUser);
       } else {
         router.push("/signin");
       }
     });
     return () => unsubscribe();
-  }, [currentUser]);
+  }, []);
 
   const handleUpdateUserProfile = useCallback(
     async (firstName, lastName, photo) => {
       try {
-        await updateProfile(currentUser, {
+        await updateProfile(user, {
           displayName: `${firstName} ${lastName}`,
+          photoURL: photo ?? user.photoURL,
         });
         setUser((prevUser) => ({
           ...prevUser,
-          firstName,
-          lastName,
-          name: `${firstName} ${lastName}`,
+          displayName: `${firstName} ${lastName}`,
           photo,
         }));
       } catch (error) {
         console.error("Error updating user profile:", error);
       }
     },
-    [currentUser]
+    [user]
   );
 
   return (
@@ -68,11 +59,7 @@ const Home = () => {
           ),
           headerRight: () => (
             <ScreenHeaderBtn
-              iconUrl={
-                currentUser?.photoURL
-                  ? { uri: currentUser.photoURL }
-                  : images.profile
-              }
+              iconUrl={user?.photoURL ? { uri: user.photoURL } : images.profile}
               dimension="100%"
               handlePress={() => setModalVisible(!isModalVisible)}
             />
@@ -89,7 +76,7 @@ const Home = () => {
           }}
         >
           <Welcome
-            user={currentUser}
+            user={user}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             handleClick={() => {

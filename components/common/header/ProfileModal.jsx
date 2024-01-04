@@ -50,15 +50,20 @@ const ProfileModal = ({ visible, onClose, user, onUpdate }) => {
     try {
       if (selectedImage) {
         const imageBlob = await fetch(selectedImage).then((res) => res.blob());
-
         await upload(imageBlob, user, () => {
           console.log("Image uploaded");
         });
       }
 
-      onUpdate(firstName, lastName, selectedImage);
+      if (firstName.trim() !== "" || lastName.trim() !== "") {
+        onUpdate(firstName, lastName, selectedImage);
+      }
 
       onClose();
+
+      setFirstName("");
+      setLastName("");
+      setSelectedImage(null);
     } catch (error) {
       console.error("Error updating profile:", error);
     } finally {

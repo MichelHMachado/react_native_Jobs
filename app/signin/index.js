@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, StyleSheet, TextInput, View, Text } from "react-native";
 import { auth } from "../../firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 WebBrowser.maybeCompleteAuthSession();
@@ -12,10 +12,20 @@ const SignIn = () => {
   const [error, setError] = useState(null);
   const router = useRouter();
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        router.push("/");
+      }
+    });
+
+    // Cleanup the subscription when the component unmounts
+    return () => unsubscribe();
+  }, []);
+
   const onSignInPress = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push("/");
     } catch (error) {
       setError("Invalid email or password. Please try again, or sign up.");
       console.error("Error during sign in:", error);

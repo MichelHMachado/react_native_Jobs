@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { Button, StyleSheet, TextInput, View } from "react-native";
 import { auth } from "../../firebaseConfig";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  updateProfile,
+} from "firebase/auth";
 import { useRouter } from "expo-router";
 
 const Signup = () => {
@@ -20,13 +24,15 @@ const Signup = () => {
         password
       );
 
-      // Update user profile
       await updateProfile(user, {
         displayName: `${firstName} ${lastName}`,
       });
 
-      // Redirect to welcome page or any other page
-      router.push("/");
+      onAuthStateChanged(auth, (user) => {
+        if (user?.displayName) {
+          router.push("/");
+        }
+      });
     } catch (error) {
       console.error("Error during sign up:", error);
     }
@@ -69,7 +75,6 @@ const Signup = () => {
         title="Sign Up"
         onPress={() => {
           onSignUpPress();
-          router.push("/");
         }}
       />
     </View>
