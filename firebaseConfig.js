@@ -11,9 +11,6 @@ import {
   updateProfile,
   initializeAuth,
   getReactNativePersistence,
-  GoogleAuthProvider,
-  signInWithRedirect,
-  signInWithPopup,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import {
@@ -39,10 +36,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 let auth;
 if (Platform.OS === "web") {
-  // do something for ios
   auth = getAuth(app);
 } else {
-  // other thing for android
   auth = initializeAuth(app, {
     persistence: getReactNativePersistence(ReactNativeAsyncStorage),
   });
@@ -50,24 +45,8 @@ if (Platform.OS === "web") {
 
 const firestore = getFirestore(app);
 
-const provider = new GoogleAuthProvider();
-
 export function signup(email, password) {
   return createUserWithEmailAndPassword(auth, email, password);
-}
-
-export function loginWithGoogle() {
-  if (Platform.OS === "web") {
-    signInWithRedirect(auth, provider);
-  } else {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        console.log(result);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
 }
 
 export function login(email, password) {
