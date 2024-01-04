@@ -2,6 +2,8 @@ import { Stack } from "expo-router";
 import { useCallback } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import { Slot } from "expo-router";
+import { SessionProvider } from "../ctx";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -18,7 +20,12 @@ const Layout = () => {
 
   if (!fontsLoaded) return null;
 
-  return <Stack onLayout={onLayoutRootView} />;
+  return (
+    <SessionProvider>
+      <Slot />
+      <Stack onLayout={onLayoutRootView} />;
+    </SessionProvider>
+  );
 };
 
 export default Layout;
