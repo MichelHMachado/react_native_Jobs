@@ -9,14 +9,13 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-import { updateDoc, doc } from "@firebase/firestore";
-import { firestore, upload } from "../../../firebaseConfig";
+import { upload } from "../../../firebaseConfig";
 import * as ImagePicker from "expo-image-picker";
 
 import styles from "./profileModal.style";
 import AuthButtons from "../../home/buttons/AuthButtons";
 
-const ProfileModal = ({ visible, onClose, user, userId, onUpdate }) => {
+const ProfileModal = ({ visible, onClose, user, onUpdate }) => {
   const [firstName, setFirstName] = useState(user?.firstName || "");
   const [lastName, setLastName] = useState(user?.lastName || "");
   const [selectedImage, setSelectedImage] = useState(null);
@@ -49,11 +48,6 @@ const ProfileModal = ({ visible, onClose, user, userId, onUpdate }) => {
     setLoading(true);
 
     try {
-      await updateDoc(doc(firestore, "users", userId), {
-        firstName,
-        lastName,
-      });
-
       if (selectedImage) {
         const imageBlob = await fetch(selectedImage).then((res) => res.blob());
 
@@ -106,6 +100,8 @@ const ProfileModal = ({ visible, onClose, user, userId, onUpdate }) => {
             <Image
               source={{ uri: selectedImage }}
               style={{
+                borderRadius: 10,
+                marginTop: 16,
                 width: 200,
                 height: 200,
                 resizeMode: "cover",

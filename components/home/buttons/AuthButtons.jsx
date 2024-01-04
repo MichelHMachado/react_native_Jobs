@@ -35,12 +35,6 @@ const AuthButtons = ({ onClose }) => {
 
   return (
     <>
-      <AuthButton text="Signup" onPress={handleSignUp} backgroundColor="blue" />
-      <AuthButton
-        text="Sign In"
-        onPress={handleSignIn}
-        backgroundColor="gray"
-      />
       <AuthButton
         text="Sign Out"
         onPress={handleSignOut}

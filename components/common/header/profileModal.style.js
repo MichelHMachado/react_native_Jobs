@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   AuthButtons: {
     marginTop: 24,
     height: 60,
-    width: 150,
+    width: "100%",
     marginTop: 8,
     borderWidth: 1,
     borderColor: "gray",

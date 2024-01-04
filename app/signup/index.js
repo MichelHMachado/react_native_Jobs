@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Button, StyleSheet, TextInput, View } from "react-native";
-import { auth, firestore } from "../../firebaseConfig";
-import { collection, addDoc } from "@firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebaseConfig";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useRouter } from "expo-router";
 
 const Signup = () => {
@@ -21,11 +20,9 @@ const Signup = () => {
         password
       );
 
-      await addDoc(collection(firestore, "users"), {
-        uid: user.uid,
-        firstName,
-        lastName,
-        email,
+      // Update user profile
+      await updateProfile(user, {
+        displayName: `${firstName} ${lastName}`,
       });
 
       // Redirect to welcome page or any other page

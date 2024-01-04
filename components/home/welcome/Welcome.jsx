@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -17,11 +17,16 @@ const jobTypes = ["Full-time", "Part-time", "Contractor"];
 const Welcome = ({ searchTerm, setSearchTerm, handleClick, user }) => {
   const router = useRouter();
   const [activeJobType, setActiveJobType] = useState("Full-time");
+  const [userName, setUserName] = useState(null);
+
+  useEffect(() => {
+    setUserName(user?.displayName);
+  }, [user]);
 
   return (
     <View>
       <View style={styles.container}>
-        <Text style={styles.userName}>Hello {user ? user.name : "Guest"}</Text>
+        <Text style={styles.userName}>Hello {userName ?? "Guest"}</Text>
         <Text style={styles.welcomeMessage}>Find your perfect job</Text>
       </View>
 

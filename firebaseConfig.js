@@ -9,6 +9,11 @@ import {
   onAuthStateChanged,
   signOut,
   updateProfile,
+  initializeAuth,
+  getReactNativePersistence,
+  GoogleAuthProvider,
+  signInWithRedirect,
+  signInWithPopup,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import {
@@ -17,7 +22,6 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "@firebase/storage";
-import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform } from "react-native";
 
@@ -46,8 +50,24 @@ if (Platform.OS === "web") {
 
 const firestore = getFirestore(app);
 
+const provider = new GoogleAuthProvider();
+
 export function signup(email, password) {
   return createUserWithEmailAndPassword(auth, email, password);
+}
+
+export function loginWithGoogle() {
+  if (Platform.OS === "web") {
+    signInWithRedirect(auth, provider);
+  } else {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 }
 
 export function login(email, password) {
@@ -77,7 +97,6 @@ export async function upload(file, currentUser, setLoading) {
   const snapshot = await uploadBytes(fileRef, file);
   const photoURL = await getDownloadURL(fileRef);
 
-  // Workaround to update the profile without triggering getIdToken error
   await new Promise((resolve) => setTimeout(resolve, 0));
   await updateProfile(auth.currentUser, { photoURL });
 

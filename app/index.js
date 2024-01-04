@@ -9,17 +9,8 @@ import {
   ScreenHeaderBtn,
   Welcome,
 } from "../components";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth, firestore } from "../firebaseConfig";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  updateDoc,
-  doc,
-} from "@firebase/firestore";
-import { isEmpty } from "lodash";
+import { onAuthStateChanged, updateProfile } from "firebase/auth";
+import { auth, useAuth } from "../firebaseConfig";
 import ProfileModal from "../components/common/header/ProfileModal";
 
 const Home = () => {
@@ -28,48 +19,30 @@ const Home = () => {
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
-
+  const currentUser = useAuth();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser) {
-        try {
-          const userDocRef = collection(firestore, "users");
-          const userQuery = query(userDocRef, where("uid", "==", authUser.uid));
-          const userDocSnapshot = await getDocs(userQuery);
-          setUserId(userDocSnapshot.docs[0].id);
+        const updatedUser = {
+          name: currentUser?.displayName,
+          photo: currentUser?.photoURL,
+        };
 
-          if (!isEmpty(userDocSnapshot.docs)) {
-            const userData = userDocSnapshot.docs[0].data();
-
-            setUser({
-              uid: authUser.uid,
-              name: userData.firstName + " " + userData.lastName,
-              photo: authUser?.photoURL,
-              firstName: userData.firstName,
-              lastName: userData.lastName,
-            });
-          } else {
-            console.log("User document does not exist");
-          }
-        } catch (error) {
-          console.error("Error fetching user data from Firestore:", error);
-        }
+        // Update the user state with the new information
+        setUser(updatedUser);
       } else {
         router.push("/signin");
       }
     });
     return () => unsubscribe();
-  }, []);
+  }, [currentUser]);
 
   const handleUpdateUserProfile = useCallback(
     async (firstName, lastName, photo) => {
       try {
-        const userDocRef = doc(firestore, "users", userId);
-        await updateDoc(userDocRef, {
-          firstName,
-          lastName,
+        await updateProfile(currentUser, {
+          displayName: `${firstName} ${lastName}`,
         });
-
         setUser((prevUser) => ({
           ...prevUser,
           firstName,
@@ -81,7 +54,7 @@ const Home = () => {
         console.error("Error updating user profile:", error);
       }
     },
-    [userId]
+    [currentUser]
   );
 
   return (
@@ -95,7 +68,11 @@ const Home = () => {
           ),
           headerRight: () => (
             <ScreenHeaderBtn
-              iconUrl={user?.photo ? { uri: user.photo } : images.profile}
+              iconUrl={
+                currentUser?.photoURL
+                  ? { uri: currentUser.photoURL }
+                  : images.profile
+              }
               dimension="100%"
               handlePress={() => setModalVisible(!isModalVisible)}
             />
@@ -112,7 +89,7 @@ const Home = () => {
           }}
         >
           <Welcome
-            user={user}
+            user={currentUser}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             handleClick={() => {
@@ -131,7 +108,6 @@ const Home = () => {
         visible={isModalVisible}
         onClose={() => setModalVisible(false)}
         user={user}
-        userId={userId}
         onUpdate={(firstName, lastName, photo) =>
           handleUpdateUserProfile(firstName, lastName, photo)
         }
