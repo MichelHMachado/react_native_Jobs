@@ -17,9 +17,9 @@ import {
   JobTabs,
   ScreenHeaderBtn,
   Specifics,
-} from "../../components";
-import { COLORS, icons, SIZES } from "../../constants";
-import useFetch from "../../hook/useFetch";
+} from "../../../components";
+import { COLORS, icons, SIZES } from "../../../constants";
+import useFetch from "../../../hook/useFetch";
 
 const tabs = ["About", "Qualifications", "Responsibilities"];
 

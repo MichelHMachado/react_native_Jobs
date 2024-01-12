@@ -1,16 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView, ScrollView, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
-import { COLORS, icons, images, SIZES } from "../constants";
+import { COLORS, icons, images, SIZES } from "../../constants";
 import {
   Nearbyjobs,
   Popularjobs,
   ScreenHeaderBtn,
   Welcome,
-} from "../components";
+} from "../../components";
 import { onAuthStateChanged, updateProfile } from "firebase/auth";
-import { auth } from "../firebaseConfig";
-import ProfileModal from "../components/common/header/ProfileModal";
+import { auth } from "../../firebaseConfig";
+import ProfileModal from "../../components/common/header/ProfileModal";
 
 const Home = () => {
   const router = useRouter();
