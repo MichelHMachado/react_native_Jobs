@@ -41,7 +41,7 @@ const JobSearch = () => {
           page: page.toString(),
         },
       };
-      const shouldMakeRequest = false;
+      const shouldMakeRequest = true;
 
       if (shouldMakeRequest) {
         const response = await axios.request(options);
